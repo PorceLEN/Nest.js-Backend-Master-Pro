@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -10,6 +10,12 @@ export class User {
 
   @Column()
   lastName: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  password: string; // Hasher
 
   @Column({ default: true })
   isActive: boolean;

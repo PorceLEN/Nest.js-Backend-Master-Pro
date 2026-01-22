@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { User } from './users/entities/users.entity';
+import { User } from './users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PhotoModule } from './photo/photo.module';
+import { ProductsModule } from './products/products.module';
+import { Product } from './products/entities/product.entity';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -14,10 +17,12 @@ import { PhotoModule } from './photo/photo.module';
       username: 'root',
       password: 'root',
       database: 'test',
-      entities: [User],
+      entities: [User, Product],
       synchronize: true,
     }),
-    PhotoModule,
+    ProductsModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
