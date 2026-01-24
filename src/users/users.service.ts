@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
 import { UserRegisterModel } from './interfaces/UserRegisterModel';
 import { UserRegisterSecure } from './interfaces/UserRegisterSecure';
 import { UserLoginModel } from './interfaces/UserLoginModel';
+import { hashingPassword } from 'src/utils/hashingPassword';
+import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,37 +15,42 @@ export class UsersService {
   ) {}
 
   async create(userRegister: UserRegisterModel): Promise<User> {
-
-    
-    console.log("PASSWORD :", userRegister.password);
-
-    const salt = await bcrypt.genSalt(10);
-    const hashingPassword = await bcrypt.hash(
-      userRegister.password,
-      salt,
-    );
-
-    console.log("SECURE PASSWORD :", hashingPassword);
-    
-
+    const pass = await hashingPassword(userRegister.password);
     const { password, ...userWithoutPassword } = userRegister;
 
     const userSecuring: UserRegisterSecure = {
-      password: hashingPassword,
+      password: pass,
       ...userWithoutPassword,
     };
 
+    // console.log(userSecuring);
+
     const user = this.usersRepository.create(userSecuring);
-    return this.usersRepository.save(user);
+    await this.usersRepository.save(user);
+
+    return user;
   }
 
   async existUserAccount(userAccount: UserLoginModel): Promise<boolean> {
     return this.usersRepository.exists({
       where: {
         email: userAccount.email,
-        password: userAccount.password,
       },
     });
+  }
+
+  async passwordMatch(userAccount: UserLoginModel): Promise<boolean> {
+    const userRepo = await this.usersRepository.findOneBy({
+      email: userAccount.email,
+    });
+
+    if (!userRepo) {
+      throw new NotFoundException(
+        'Utilisateur non trouvé dans le repository !',
+      );
+    }
+
+    return await bcrypt.compare(userAccount.password, userRepo.password);
   }
 
   async existMail(userEmail: string): Promise<boolean> {

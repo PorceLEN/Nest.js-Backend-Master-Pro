@@ -7,8 +7,8 @@ import {
   Param,
   Delete,
   ConflictException,
-  HttpCode,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import type { UserRegisterResponse } from './interfaces/UserRegisterResponse';
@@ -41,14 +41,20 @@ export class UsersController {
   async login(@Body() user: UserLoginModel): Promise<UserLoginResponse> {
     const theAccountExist = await this.usersService.existUserAccount(user);
 
-    if (theAccountExist) {
-      return {
-        email: user.email,
-      };
+    console.log(theAccountExist);
+
+    if (!theAccountExist) {
+      throw new NotFoundException('Email ou mot de passe incorrect !');
     }
 
-    throw new UnauthorizedException(
-      "L'adresse email ou le mot de passe ne correspond pas !",
-    );
+    const passwordMatch = await this.usersService.passwordMatch(user);
+
+    if (!passwordMatch) {
+      throw new NotFoundException('Email ou mot de passe incorrect !');
+    }
+
+    return {
+      email: user.email,
+    };
   }
 }
