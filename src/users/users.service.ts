@@ -4,26 +4,24 @@ import { Repository } from 'typeorm';
 import { UserRegisterModel } from './interfaces/UserRegisterModel';
 import { UserRegisterSecure } from './interfaces/UserRegisterSecure';
 import { UserLoginModel } from './interfaces/UserLoginModel';
-import { hashingPassword } from 'src/utils/hashingPassword';
 import { User } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
+import { PasswordService } from 'src/password/password.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private readonly passwordService: PasswordService,
   ) {}
 
   async create(userRegister: UserRegisterModel): Promise<User> {
-    const pass = await hashingPassword(userRegister.password);
+    const pass = await this.passwordService.hash(userRegister.password);
     const { password, ...userWithoutPassword } = userRegister;
 
     const userSecuring: UserRegisterSecure = {
       password: pass,
       ...userWithoutPassword,
     };
-
-    // console.log(userSecuring);
 
     const user = this.usersRepository.create(userSecuring);
     await this.usersRepository.save(user);
@@ -39,18 +37,26 @@ export class UsersService {
     });
   }
 
-  async passwordMatch(userAccount: UserLoginModel): Promise<boolean> {
-    const userRepo = await this.usersRepository.findOneBy({
+  async findByEmail(userAccount: UserLoginModel): Promise<User> {
+    const user = await this.usersRepository.findOneBy({
       email: userAccount.email,
     });
 
-    if (!userRepo) {
-      throw new NotFoundException(
-        'Utilisateur non trouvé dans le repository !',
-      );
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé !');
     }
 
-    return await bcrypt.compare(userAccount.password, userRepo.password);
+    return user;
+  }
+
+  async findById(id: number): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé !');
+    }
+
+    return user;
   }
 
   async existMail(userEmail: string): Promise<boolean> {

@@ -7,6 +7,10 @@ import { ProductsModule } from './products/products.module';
 import { Product } from './products/entities/product.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { PasswordService } from './password/password.service';
+import { PasswordModule } from './password/password.module';
+import { FilesModule } from './files/files.module';
+import { MailsModule } from './mails/mails.module';
 
 @Module({
   imports: [
@@ -23,8 +27,11 @@ import { AuthModule } from './auth/auth.module';
     ProductsModule,
     UsersModule,
     AuthModule,
+    PasswordModule,
+    FilesModule,
+    MailsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PasswordService],
 })
 export class AppModule {}
