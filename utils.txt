@@ -2,3 +2,5 @@
 2 : PostgreSQL
 3 : Docker
 4 : bcrypt + @types/bcrypt
+5 : class-validator
+6 : class-transformer

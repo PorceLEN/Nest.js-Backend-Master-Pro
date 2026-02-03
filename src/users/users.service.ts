@@ -1,11 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserRegisterModel } from './interfaces/UserRegisterModel';
-import { UserRegisterSecure } from './interfaces/UserRegisterSecure';
-import { UserLoginModel } from './interfaces/UserLoginModel';
 import { User } from './entities/user.entity';
 import { PasswordService } from 'src/password/password.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -14,11 +12,11 @@ export class UsersService {
     private readonly passwordService: PasswordService,
   ) {}
 
-  async create(userRegister: UserRegisterModel): Promise<User> {
+  async create(userRegister: CreateUserDto): Promise<User> {
     const pass = await this.passwordService.hash(userRegister.password);
     const { password, ...userWithoutPassword } = userRegister;
 
-    const userSecuring: UserRegisterSecure = {
+    const userSecuring: CreateUserDto = {
       password: pass,
       ...userWithoutPassword,
     };
@@ -29,34 +27,24 @@ export class UsersService {
     return user;
   }
 
-  async existUserAccount(userAccount: UserLoginModel): Promise<boolean> {
+  async existUserAccount(user: User): Promise<boolean> {
     return this.usersRepository.exists({
       where: {
-        email: userAccount.email,
+        email: user.email,
       },
     });
   }
 
-  async findByEmail(userAccount: UserLoginModel): Promise<User> {
-    const user = await this.usersRepository.findOneBy({
-      email: userAccount.email,
+  async findById(id: number): Promise<User> {
+    const userSearch = await this.usersRepository.findOneBy({
+      id,
     });
 
-    if (!user) {
+    if (!userSearch) {
       throw new NotFoundException('Utilisateur non trouvé !');
     }
 
-    return user;
-  }
-
-  async findById(id: number): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ id });
-
-    if (!user) {
-      throw new NotFoundException('Utilisateur non trouvé !');
-    }
-
-    return user;
+    return userSearch;
   }
 
   async existMail(userEmail: string): Promise<boolean> {

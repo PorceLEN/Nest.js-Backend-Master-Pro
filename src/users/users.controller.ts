@@ -6,18 +6,19 @@ import {
   NotFoundException,
   Get,
   Param,
+  Patch,
+  Delete,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import type { UserRegisterResponse } from './interfaces/UserRegisterResponse';
-import type { UserRegisterModel } from './interfaces/UserRegisterModel';
-import type { UserLoginResponse } from './interfaces/UserLoginResponse';
-import type { UserLoginModel } from './interfaces/UserLoginModel';
 import { PasswordService } from 'src/password/password.service';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateResult } from 'typeorm/browser';
 import { DeleteResult } from 'typeorm/browser';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -27,10 +28,10 @@ export class UsersController {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  @Post('register')
-  async register(
-    @Body() user: UserRegisterModel,
-  ): Promise<UserRegisterResponse> {
+  @Post('create')
+  async create(
+    @Body() user: CreateUserDto, // a modif
+  ): Promise<User> {
     const theMailIsAlreadyExist = await this.usersService.existMail(user.email);
 
     if (theMailIsAlreadyExist) {
@@ -39,56 +40,49 @@ export class UsersController {
       );
     }
 
-    return {
-      user: await this.usersService.create(user),
-    };
+    return await this.usersService.create(user);
   }
 
   @Post('login')
-  async login(@Body() userEntry: UserLoginModel): Promise<UserLoginResponse> {
-    const theAccountExist = await this.usersService.existUserAccount(userEntry);
-
-    console.log(theAccountExist);
-
+  async login(@Body() user: User): Promise<User> {
+    const theAccountExist = await this.usersService.existUserAccount(user);
+    
     if (!theAccountExist) {
       throw new NotFoundException('Email ou mot de passe incorrect !');
     }
 
-    const user = await this.usersService.findByEmail(userEntry);
+    const userFound = await this.usersService.findById(user.id);
 
     const isPasswordMatching = await this.passwordService.match(
-      userEntry.password,
       user.password,
+      userFound.password,
     );
+
+    console.log(userFound, user);
+    
 
     if (!isPasswordMatching) {
       throw new NotFoundException('Email ou mot de passe incorrect !');
     }
-
-    return {
-      email: userEntry.email,
-    };
-  }
-
-  @Post('update')
-  async update(@Body() { user }: { user: User }): Promise<UpdateResult> {
-    return await this.usersRepository.update(user.id, user);
-  }
-
-  @Post('delete')
-  async delete(@Body() { user }: { user: User }): Promise<DeleteResult> {
-    return await this.usersRepository.delete(user.id);
+    
+    return user;
   }
 
   @Get(':id')
-  async findOne(@Param("id") id: number) {
+  async findOne(@Param('id') id: number) {
     return await this.usersService.findById(id);
   }
-}
 
-// true format : {
-//   "id": 1,
-//   "optionToUpdate": {
-//     "email": "test@mail.com"
-//   }
-// }
+  @Patch(':id')
+  async update(
+    @Param('id') id: number,
+    @Body(new ValidationPipe()) updateUserDto: UpdateUserDto, // à vérifier
+  ): Promise<UpdateResult> {
+    return await this.usersRepository.update(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<DeleteResult> {
+    return await this.usersRepository.delete(id);
+  }
+}

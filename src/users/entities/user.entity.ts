@@ -11,11 +11,14 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column({ unique: true }) 
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string; // Hasher
+
+  @Column({ default: false})
+  isAdmin: boolean;
 
   @Column({ default: true })
   isActive: boolean;
