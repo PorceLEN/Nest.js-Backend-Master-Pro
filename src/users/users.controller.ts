@@ -9,6 +9,7 @@ import {
   Patch,
   Delete,
   ValidationPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { PasswordService } from 'src/password/password.service';
@@ -30,7 +31,7 @@ export class UsersController {
 
   @Post('create')
   async create(
-    @Body() user: CreateUserDto, // a modif
+    @Body() user: CreateUserDto, 
   ): Promise<User> {
     const theMailIsAlreadyExist = await this.usersService.existMail(user.email);
 
@@ -43,6 +44,7 @@ export class UsersController {
     return await this.usersService.create(user);
   }
 
+  @HttpCode(200)
   @Post('login')
   async login(@Body() user: User): Promise<User> {
     const theAccountExist = await this.usersService.existUserAccount(user);
@@ -57,10 +59,7 @@ export class UsersController {
       user.password,
       userFound.password,
     );
-
-    console.log(userFound, user);
     
-
     if (!isPasswordMatching) {
       throw new NotFoundException('Email ou mot de passe incorrect !');
     }
@@ -69,7 +68,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOneById(@Param('id') id: number) {
     return await this.usersService.findById(id);
   }
 
