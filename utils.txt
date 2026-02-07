@@ -4,3 +4,6 @@
 4 : bcrypt + @types/bcrypt
 5 : class-validator
 6 : class-transformer
+7 : express-session
+8 : @types/express-session
+9 : @nestjs/passport passport passport-local & @types/passport-local

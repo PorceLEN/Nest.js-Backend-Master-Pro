@@ -3,16 +3,13 @@ import {
   Post,
   Body,
   ConflictException,
-  NotFoundException,
   Get,
   Param,
   Patch,
   Delete,
   ValidationPipe,
-  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { PasswordService } from 'src/password/password.service';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,14 +22,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    private readonly passwordService: PasswordService,
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
   @Post('create')
-  async create(
-    @Body() user: CreateUserDto, 
-  ): Promise<User> {
+  async create(@Body() user: CreateUserDto): Promise<User> {
     const theMailIsAlreadyExist = await this.usersService.existMail(user.email);
 
     if (theMailIsAlreadyExist) {
@@ -44,29 +38,6 @@ export class UsersController {
     return await this.usersService.create(user);
   }
 
-  @HttpCode(200)
-  @Post('login')
-  async login(@Body() user: User): Promise<User> {
-    const theAccountExist = await this.usersService.existUserAccount(user);
-    
-    if (!theAccountExist) {
-      throw new NotFoundException('Email ou mot de passe incorrect !');
-    }
-
-    const userFound = await this.usersService.findById(user.id);
-
-    const isPasswordMatching = await this.passwordService.match(
-      user.password,
-      userFound.password,
-    );
-    
-    if (!isPasswordMatching) {
-      throw new NotFoundException('Email ou mot de passe incorrect !');
-    }
-    
-    return user;
-  }
-
   @Get(':id')
   async findOneById(@Param('id') id: number) {
     return await this.usersService.findById(id);
@@ -75,7 +46,7 @@ export class UsersController {
   @Patch(':id')
   async update(
     @Param('id') id: number,
-    @Body(new ValidationPipe()) updateUserDto: UpdateUserDto, // à vérifier
+    @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
     return await this.usersRepository.update(id, updateUserDto);
   }
