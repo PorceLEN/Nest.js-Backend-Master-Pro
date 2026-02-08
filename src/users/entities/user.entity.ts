@@ -15,9 +15,9 @@ export class User {
   email: string;
 
   @Column()
-  password: string; // Hasher
+  password: string; 
 
-  @Column({ default: false})
+  @Column({ default: true })
   isAdmin: boolean;
 
   @Column({ default: true })

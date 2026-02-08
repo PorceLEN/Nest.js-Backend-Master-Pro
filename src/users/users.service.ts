@@ -12,7 +12,7 @@ export class UsersService {
     private readonly passwordService: PasswordService,
   ) {}
 
-  async create(userRegister: CreateUserDto): Promise<User> {
+  async createAndSave(userRegister: CreateUserDto): Promise<User> {
     const pass = await this.passwordService.hash(userRegister.password);
     const { password, ...userWithoutPassword } = userRegister;
 
@@ -27,29 +27,38 @@ export class UsersService {
     return user;
   }
 
-  async existUserAccount(user: User): Promise<boolean> {
-    return this.usersRepository.exists({
-      where: {
-        email: user.email,
-      },
-    });
-  }
-
   async findById(id: number): Promise<User> {
-    const userSearch = await this.usersRepository.findOneBy({
+    const user = await this.usersRepository.findOneBy({
       id,
     });
 
-    if (!userSearch) {
-      throw new NotFoundException('Utilisateur non trouvé !');
+    if (!user) {
+      throw new NotFoundException("Cet utilisateur n'existe pas !");
     }
 
-    return userSearch;
+    return user;
   }
 
-  async existMail(userEmail: string): Promise<boolean> {
+  async findByEmail(email: string): Promise<User> {
+    // !!!
+    const user = await this.usersRepository.findOneBy({ email });
+
+    if (!user) {
+      throw new NotFoundException("Cet utilisateur n'existe pas !");
+    }
+
+    return user;
+  }
+
+  async existMail(email: string): Promise<boolean> {
     return this.usersRepository.exists({
-      where: { email: userEmail },
+      where: { email },
+    });
+  }
+
+  async theAccountExist(user: User): Promise<boolean> {
+    return this.usersRepository.exists({
+      where: { email: user.email, password: user.password },
     });
   }
 }
