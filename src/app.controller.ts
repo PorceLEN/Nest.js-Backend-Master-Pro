@@ -1,23 +1,45 @@
-import { Controller, Request, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Request as Req,
+  Post,
+  UseGuards,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
+import type { Request } from 'express';
 
 @Controller()
 export class AppController {
-
   constructor() {}
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login(@Request() req: any) {
-    console.log(req.isAuthenticated?.());
-    console.log(req.session);
-    
-    return req.session;
-  }
+  async login(@Req() req: Request) {
+    if (!req.user) {
+      throw new UnauthorizedException('Erreur lors de la connexion !');
+    }
+
+    req.login(req.user, (err) => {
+      if (err) {
+        throw new InternalServerErrorException('Login failed');
+      }
+
+      return req.user;
+    });
+  }     // erreur return
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/logout')
-  async logout(@Request() req: any) {
-    return req.logout();
+  async logout(@Req() req: Request) {
+    req.logout({ keepSessionInfo: false }, (err) => {
+      if (err) {
+        throw new InternalServerErrorException('Logout failed');
+      }
+
+      console.log(req.isAuthenticated?.());
+    });
+
+    return req.session;
   }
 }

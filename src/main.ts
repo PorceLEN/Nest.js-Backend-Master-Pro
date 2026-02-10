@@ -8,7 +8,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      name: "NESTJS_SESSION_ID",
+      name: 'NESTJS_SESSION_ID',
       secret: 'my-secret', // changed in futur
       resave: false,
       saveUninitialized: false,
@@ -16,8 +16,8 @@ async function bootstrap() {
     }),
   );
 
-  app.use(passport.initialize());
-  app.use(passport.session())
+  // app.use(passport.initialize());
+  // app.use(passport.session()); ???
 
   await app.listen(process.env.PORT ?? 3000);
 }
