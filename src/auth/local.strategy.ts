@@ -20,6 +20,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(email: string, password: string): Promise<User> {
     const user = await this.usersService.findByEmail(email);
 
+    if (!user) {
+      throw new NotFoundException("Cet utilisateur n'existe pas !")
+    }
+
     const isPasswordMatching = await this.authService.passwordMatching(
       password,
       user.password,

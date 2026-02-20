@@ -11,7 +11,7 @@ async function bootstrap() {
       name: 'NESTJS_SESSION_ID',
       secret: 'my-secret',
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
       cookie: { secure: false, maxAge: 3600000, httpOnly: true },
     }),
   );

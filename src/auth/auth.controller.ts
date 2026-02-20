@@ -5,9 +5,8 @@ import {
   Session,
   UseGuards,
   Delete,
-  NotFoundException,
   Request as Req,
-  InternalServerErrorException,
+  ConflictException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
@@ -23,49 +22,41 @@ export class AuthController {
 
   @Get('/')
   async getAuthSession(@Session() session: Record<string, any>) {
-    console.log(session);
-    console.log(session.id);
-    session.authenticated = true;
     return session;
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Req() req: Request) {
-    if (!req.user) {
-      throw new NotFoundException("Cet utilisateur n'existe pas !");
+    console.log(req.user);
+
+    if (req.user) {
+      throw new ConflictException('Vous êtes déjà connecté !');
     }
 
-    req.login(req.user, (err) => {
-      console.log('Erreur lors du login :', err);
-    });
-
     return {
+      message: 'Login successfully',
       user: req.user,
       session: req.session,
     };
   }
 
-  @UseGuards(LocalAuthGuard)
   @Delete('logout')
-  logout(@Req() req: Request) {
-    if (!req.session) {
-      throw new InternalServerErrorException('Aucune session existante !');
-    }
-
-    req.logout((err) => {
-      console.log('Erreur lors de la déconnexion :', err);
-      return;
+  async logout(@Req() req: Request) {
+    // logout Passport
+    await new Promise<void>((resolve, reject) => {
+      req.logout((err) => (err ? reject(err) : resolve()));
     });
-    // req.session.destroy((err) => {
-    //   console.log("Erreur lors de la destruction de session :", err);
-    //   return;
-    // });
 
-    console.log(req.session);
-    return;
+    // destroy session
+    await new Promise<void>((resolve, reject) => {
+      req.session.destroy((err) => (err ? reject(err) : resolve()));
+    });
+
+    return {
+      message: 'Logged out successfully',
+      user: req.user,
+      session: req.session ?? 'empty',
+    };
   }
 }
-
-// voir pour cookies
-// Pourquoi destroy bug

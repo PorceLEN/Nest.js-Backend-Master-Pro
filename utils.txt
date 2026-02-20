@@ -4,6 +4,8 @@
 4 : bcrypt + @types/bcrypt
 5 : class-validator
 6 : class-transformer
-7 : express-session
-8 : @types/express-session
+7 : express-session X
+8 : @types/express-session X
 9 : @nestjs/passport passport passport-local & @types/passport-local
+10 : @fastify/secure-session 
+11 : @nestjs/platform-fastify 
