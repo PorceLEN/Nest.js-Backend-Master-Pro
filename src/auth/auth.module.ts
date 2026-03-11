@@ -6,10 +6,11 @@ import { PasswordService } from 'src/password/password.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { LocalStrategy } from './local.strategy';
+import { SerializeService } from './serialize/serialize.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [AuthController],
-  providers: [AuthService, PasswordService, UsersService, LocalStrategy],
+  providers: [AuthService, PasswordService, UsersService, LocalStrategy, SerializeService],
 })
 export class AuthModule {}

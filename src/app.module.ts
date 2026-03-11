@@ -11,7 +11,7 @@ import { PasswordService } from './password/password.service';
 import { PasswordModule } from './password/password.module';
 import { FilesModule } from './files/files.module';
 import { MailsModule } from './mails/mails.module';
-import { LoggerMiddleware } from './middleware/logger/logger.middleware';
+import { SerializeService } from './auth/serialize/serialize.service';
 
 @Module({
   imports: [
@@ -33,13 +33,11 @@ import { LoggerMiddleware } from './middleware/logger/logger.middleware';
     MailsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PasswordService],
+  providers: [AppService, PasswordService, SerializeService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-    .apply(LoggerMiddleware)
-    .forRoutes()
   }
 }
 // finaliser ça aussi

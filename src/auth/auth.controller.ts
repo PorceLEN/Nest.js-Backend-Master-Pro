@@ -4,14 +4,16 @@ import {
   Post,
   Session,
   UseGuards,
-  Delete,
   Request as Req,
-  ConflictException,
+  Response as Res,
+  HttpCode,
+  Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
-import { LocalAuthGuard } from './local-auth.guard';
-import type { Request } from 'express';
+import { LocalAuthGuard } from './AuthLocal.guard';
+import type { Request, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -20,43 +22,61 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
+  @UseGuards(LocalAuthGuard)
   @Get('/')
-  async getAuthSession(@Session() session: Record<string, any>) {
-    return session;
+  async getAuthSession(
+    @Session() session: Record<string, any>,
+    @Req() req: Request,
+  ) {
+    return {
+      user: req.user,
+      session: req.session,
+      cookie: { sessionID: req.sessionID, cookie: req.cookies },
+    };
   }
 
   @UseGuards(LocalAuthGuard)
+  @HttpCode(200)
   @Post('login')
   async login(@Req() req: Request) {
-    console.log(req.user);
+    return new Promise((resolve, reject) => {
+      if (!req.user) {
+        throw new NotFoundException('Utilisateur inexistant');
+      }
 
-    if (req.user) {
-      throw new ConflictException('Vous êtes déjà connecté !');
-    }
-
-    return {
-      message: 'Login successfully',
-      user: req.user,
-      session: req.session,
-    };
+      req.login(req.user, (err) => {
+        if (err) {
+          console.error('Erreur login', err);
+          return reject(err); 
+        }
+        
+        resolve({
+          user: req.user,
+          session: req.session,
+          cookie: req.cookies,
+        });
+      });
+    });
   }
 
   @Delete('logout')
-  async logout(@Req() req: Request) {
-    // logout Passport
+  async logout(@Req() req: Request, @Res() res: Response) {
     await new Promise<void>((resolve, reject) => {
-      req.logout((err) => (err ? reject(err) : resolve()));
+      req.session.destroy((err) => {
+        if (err) return reject(err);
+        resolve();
+      });
     });
 
-    // destroy session
-    await new Promise<void>((resolve, reject) => {
-      req.session.destroy((err) => (err ? reject(err) : resolve()));
-    });
+    res.clearCookie('NESTJS_SESSION_ID');
 
-    return {
-      message: 'Logged out successfully',
-      user: req.user,
+    return res.send({
+      message: 'Vous vous êtes bien déconnecté',
       session: req.session ?? 'empty',
-    };
+      cookie: req.cookies ?? 'empty',
+      user: req.user ?? 'empty',
+    });
   }
 }
+
+// Remplacer les promises par la solution propre : promisify
