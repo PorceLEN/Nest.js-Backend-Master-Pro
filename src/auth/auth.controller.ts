@@ -9,20 +9,23 @@ import {
   HttpCode,
   Delete,
   NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
-import { LocalAuthGuard } from './AuthLocal.guard';
+import { LocalAuthGuard } from './LocalAuth.guard';
 import type { Request, Response } from 'express';
+import { AsyncUtilsService } from 'src/utils/promisify';
+import { User } from 'src/users/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
+    private readonly asyncUtilsService: AsyncUtilsService,
   ) {}
 
-  @UseGuards(LocalAuthGuard)
   @Get('/')
   async getAuthSession(
     @Session() session: Record<string, any>,
@@ -38,45 +41,29 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @Post('login')
-  async login(@Req() req: Request) {
-    return new Promise((resolve, reject) => {
-      if (!req.user) {
-        throw new NotFoundException('Utilisateur inexistant');
-      }
+  async login(@Req() req: Request & { user: User }) {
+    await this.asyncUtilsService.login(req, req.user);
 
-      req.login(req.user, (err) => {
-        if (err) {
-          console.error('Erreur login', err);
-          return reject(err); 
-        }
-        
-        resolve({
-          user: req.user,
-          session: req.session,
-          cookie: req.cookies,
-        });
-      });
-    });
+    return {
+      user: req.user,
+      userIsConnected: req.isAuthenticated(),
+      session: req.session,
+    };
   }
 
   @Delete('logout')
-  async logout(@Req() req: Request, @Res() res: Response) {
-    await new Promise<void>((resolve, reject) => {
-      req.session.destroy((err) => {
-        if (err) return reject(err);
-        resolve();
-      });
-    });
+  async logout(@Req() req: Request & { user: User }, @Res() res: Response) {
+    await this.asyncUtilsService.logoutUser(req, req.user);
+
+    await this.asyncUtilsService.destroySession(req.session);
 
     res.clearCookie('NESTJS_SESSION_ID');
 
-    return res.send({
+    res.send({
       message: 'Vous vous êtes bien déconnecté',
-      session: req.session ?? 'empty',
-      cookie: req.cookies ?? 'empty',
-      user: req.user ?? 'empty',
+      user: req.user,
+      userIsNotConnected: req.isUnauthenticated(),
+      session: req.session,
     });
   }
 }
-
-// Remplacer les promises par la solution propre : promisify

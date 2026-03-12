@@ -5,12 +5,13 @@ import { UsersService } from 'src/users/users.service';
 import { PasswordService } from 'src/password/password.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { LocalStrategy } from './local.strategy';
+import { LocalStrategy } from './LocalStrategy.passport';
 import { SerializeService } from './serialize/serialize.service';
+import { AsyncUtilsService } from 'src/utils/promisify';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [AuthController],
-  providers: [AuthService, PasswordService, UsersService, LocalStrategy, SerializeService],
+  providers: [AuthService, PasswordService, UsersService, LocalStrategy, SerializeService, AsyncUtilsService],
 })
 export class AuthModule {}

@@ -8,3 +8,4 @@
 8 : @types/express-session 
 9 : @nestjs/passport passport passport-local & @types/passport-local
 10 : cookie-parser ET @types/cookie-parser 
+11 : jsonwebtoken
