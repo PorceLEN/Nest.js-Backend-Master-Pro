@@ -10,15 +10,17 @@ import { User } from 'src/users/entities/user.entity';
 @Injectable()
 export class AsyncUtilsService {
   // Filesystem
-  readFile = promisify(fs.readFile);
+  private readonly readFile = promisify(fs.readFile);
   writeFile = promisify(fs.writeFile);
 
   // Child process
-  exec = promisify(exec);
+  private readonly exec = promisify(exec);
 
   // JWT
-  verifyJwt = promisify(jwt.verify);
+  private readonly verifyJwt = promisify(jwt.verify);
   signJwt = promisify(jwt.sign);
+
+  constructor() {}
 
   // Sessions
   destroySession(session: Session) {
@@ -33,3 +35,6 @@ export class AsyncUtilsService {
     return promisify(req.login).bind(req)(user);
   }
 }
+
+
+// à vérifier
