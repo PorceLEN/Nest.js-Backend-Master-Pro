@@ -8,6 +8,8 @@ import {
   Response as Res,
   HttpCode,
   Delete,
+  Body,
+  ConflictException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
@@ -15,6 +17,7 @@ import { LocalAuthGuard } from './LocalAuth.guard';
 import type { Request, Response } from 'express';
 import { AsyncUtilsService } from 'src/utils/promisify';
 import { User } from 'src/users/entities/user.entity';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -34,6 +37,17 @@ export class AuthController {
       session: req.session,
       cookie: { sessionID: req.sessionID, cookie: req.cookies },
     };
+  }
+
+  @Post('register')
+  async register(@Body() user: CreateUserDto): Promise<CreateUserDto> {
+    const userAlreadyExist = await this.usersService.theAccountExist(user);
+
+    if (userAlreadyExist) {
+      throw new ConflictException('Cet utilisateur existe déjà !');
+    }
+
+    return this.usersService.createAndSave(user);
   }
 
   @UseGuards(LocalAuthGuard)

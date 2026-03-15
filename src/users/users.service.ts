@@ -56,9 +56,9 @@ export class UsersService {
     });
   }
 
-  async theAccountExist(user: User): Promise<boolean> {
+  async theAccountExist(user: CreateUserDto): Promise<boolean> {
     return this.usersRepository.exists({
-      where: { email: user.email, password: user.password },
+      where: { email: user.email  },
     });
   }
 }
