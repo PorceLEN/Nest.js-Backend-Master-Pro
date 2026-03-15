@@ -13,11 +13,12 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
-import { LocalAuthGuard } from './LocalAuth.guard';
+import { LocalAuthGuard } from './guards/LocalAuth.guard';
 import type { Request, Response } from 'express';
 import { AsyncUtilsService } from 'src/utils/promisify';
 import { User } from 'src/users/entities/user.entity';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { NotLogged } from 'src/guards/NotLogged.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -50,10 +51,11 @@ export class AuthController {
     return this.usersService.createAndSave(user);
   }
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(NotLogged, LocalAuthGuard)
   @HttpCode(200)
   @Post('login')
   async login(@Req() req: Request & { user: User }) {
+    
     await this.asyncUtilsService.login(req, req.user);
 
     return {

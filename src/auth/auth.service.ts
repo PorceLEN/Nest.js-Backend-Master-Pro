@@ -4,7 +4,7 @@ import { PasswordService } from 'src/password/password.service';
 import { Request as Req } from '@nestjs/common';
 import type { Request } from 'express';
 import { SessionData } from 'express-session';
-import { LocalAuthGuard } from './LocalAuth.guard';
+import { LocalAuthGuard } from './guards/LocalAuth.guard';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
