@@ -8,8 +8,6 @@ import {
   Response as Res,
   HttpCode,
   Delete,
-  NotFoundException,
-  ConflictException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';

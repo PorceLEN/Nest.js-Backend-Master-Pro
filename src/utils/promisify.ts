@@ -18,23 +18,22 @@ export class AsyncUtilsService {
 
   // JWT
   private readonly verifyJwt = promisify(jwt.verify);
-  signJwt = promisify(jwt.sign);
+  private readonly signJwt = promisify(jwt.sign);
 
   constructor() {}
 
   // Sessions
-  destroySession(session: Session) {
+  async destroySession(session: Session): Promise<Session> {
     return promisify(session.destroy).bind(session)();
   }
 
-  logoutUser(req: Request, user: User) {
+  async logoutUser(req: Request, user: User): Promise<void> {
     return promisify(req.logout).bind(req)(user);
   }
 
-  login(req: Request, user: User) {
+  async login(req: Request, user: User): Promise<void> {
     return promisify(req.login).bind(req)(user);
   }
 }
-
 
 // à vérifier
