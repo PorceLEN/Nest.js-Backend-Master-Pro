@@ -1,26 +1,24 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import passport from 'passport';
+import { Injectable } from '@nestjs/common';
+import { PassportSerializer } from '@nestjs/passport';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class SerializeService implements OnModuleInit {
-  constructor(private readonly usersService: UsersService) {}
+export class SessionSerializer extends PassportSerializer {
+  constructor(private readonly usersService: UsersService) {
+    super();
+  }
 
-  onModuleInit() {
-    passport.serializeUser((user: any, done) => {
-      if (!user || !user.id) return done(new Error('Invalid user'), null);
-      done(null, user.id);
-    });
+  serializeUser(user: any, done: Function) {
+    done(null, user.id);
+  }
 
-    passport.deserializeUser(async (id: number, done) => {
-      try {
-        const user = await this.usersService.findById(id);
-        if (!user) return done(new Error('User not found'), null);
-        done(null, user);
-      } catch (err) {
-        done(err, null);
-      }
-    });
+  async deserializeUser(id: number, done: Function) {
+    try {
+      const user = await this.usersService.findById(id);
+      done(null, user || null);
+    } catch (err) {
+      done(err, null);
+    }
   }
 }
 

@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SerializeService } from './serialize.service';
+import { SessionSerializer } from './serialize.service';
 
 describe('SerializeService', () => {
-  let service: SerializeService;
+  let service: SessionSerializer;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SerializeService],
+      providers: [SessionSerializer],
     }).compile();
 
-    service = module.get<SerializeService>(SerializeService);
+    service = module.get<SessionSerializer>(SessionSerializer);
   });
 
   it('should be defined', () => {

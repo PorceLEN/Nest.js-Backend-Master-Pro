@@ -1,5 +1,5 @@
 
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -8,6 +8,11 @@ export class NotLogged implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    return !request.isAuthenticated()
+    
+    if (request.isUnauthenticated()) {
+      throw new UnauthorizedException("Vous n'êtes pas connecté !")
+    }
+
+    return true;
   }
 }

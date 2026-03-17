@@ -1,4 +1,4 @@
-import { Module, NestModule, MiddlewareConsumer, RequestMethod  } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer  } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './users/entities/user.entity';
@@ -11,7 +11,6 @@ import { PasswordService } from './password/password.service';
 import { PasswordModule } from './password/password.module';
 import { FilesModule } from './files/files.module';
 import { MailsModule } from './mails/mails.module';
-import { SerializeService } from './auth/serialize/serialize.service';
 
 @Module({
   imports: [
@@ -33,7 +32,7 @@ import { SerializeService } from './auth/serialize/serialize.service';
     MailsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PasswordService, SerializeService],
+  providers: [AppService, PasswordService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
