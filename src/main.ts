@@ -7,15 +7,22 @@ import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // session
+
   app.use(cookieParser());
-  
+
   app.use(
     session({
       name: 'NESTJS_SESSION_ID',
       secret: 'my-secret',
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: false, maxAge: 3600000, httpOnly: true },
+      cookie: {
+        secure: false,
+        maxAge: 3600000,
+        httpOnly: true,
+        sameSite: 'strict',
+      },
     }),
   );
 

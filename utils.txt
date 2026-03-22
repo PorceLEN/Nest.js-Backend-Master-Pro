@@ -10,3 +10,5 @@
 10 : cookie-parser ET @types/cookie-parser 
 11 : jsonwebtoken
 12 : @types/jsonwebtoken
+13 : csrf-csrf
+14 : @fastify/csrf-protection

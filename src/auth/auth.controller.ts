@@ -18,8 +18,8 @@ import type { Request, Response } from 'express';
 import { AsyncUtilsService } from 'src/utils/promisify';
 import { User } from 'src/users/entities/user.entity';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { IsLogged } from './guards/isLogged';
-import { NotLogged } from './guards/NotLogged';
+import { IsLoggedGuard } from './guards/IsLogged.guard';
+import { NotLoggedGuard } from './guards/NotLogged.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -52,7 +52,7 @@ export class AuthController {
     return this.usersService.createAndSave(user);
   }
 
-  @UseGuards(IsLogged, LocalAuthGuard)
+  @UseGuards(IsLoggedGuard, LocalAuthGuard)
   @HttpCode(200)
   @Post('login')
   async login(@Req() req: Request & { user: User }) {
@@ -66,7 +66,7 @@ export class AuthController {
     };
   }
 
-  @UseGuards(NotLogged)
+  @UseGuards(NotLoggedGuard)
   @Delete('logout')
   async logout(@Req() req: Request & { user: User }, @Res() res: Response) {
     await this.asyncUtilsService.logoutUser(req, req.user);

@@ -3,7 +3,7 @@ import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class IsLogged implements CanActivate {
+export class IsLoggedGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
