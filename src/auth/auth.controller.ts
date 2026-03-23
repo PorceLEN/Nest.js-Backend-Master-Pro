@@ -20,6 +20,9 @@ import { User } from 'src/users/entities/user.entity';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { IsLoggedGuard } from './guards/IsLogged.guard';
 import { NotLoggedGuard } from './guards/NotLogged.guard';
+import { Roles } from 'src/common/enums/roles/roles.decorator';
+import { Role } from 'src/common/enums/roles/role.enum';
+import { AdminGuard } from 'src/common/enums/roles/admin.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -43,10 +46,11 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() user: CreateUserDto): Promise<CreateUserDto> {
+    // Créer un guard
     const userAlreadyExist = await this.usersService.theAccountExist(user);
 
     if (userAlreadyExist) {
-      throw new ConflictException('Cet utilisateur existe déjà !');
+      throw new ConflictException('Cet adresse email est déjà utilisé !');
     }
 
     return this.usersService.createAndSave(user);
@@ -56,7 +60,6 @@ export class AuthController {
   @HttpCode(200)
   @Post('login')
   async login(@Req() req: Request & { user: User }) {
-
     await this.asyncUtilsService.login(req, req.user);
 
     return {
@@ -66,7 +69,8 @@ export class AuthController {
     };
   }
 
-  @UseGuards(NotLoggedGuard)
+  @Roles(Role.Admin)
+  @UseGuards(NotLoggedGuard, AdminGuard)
   @Delete('logout')
   async logout(@Req() req: Request & { user: User }, @Res() res: Response) {
     await this.asyncUtilsService.logoutUser(req, req.user);

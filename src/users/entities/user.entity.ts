@@ -15,11 +15,11 @@ export class User {
   email: string;
 
   @Column()
-  password: string; 
+  password: string;
+
+  @Column('text', { array: true, default: ["member"] })
+  roles: string[];
 
   @Column({ default: true })
-  isAdmin: boolean;
-
-  @Column({ default: true })
-  isActive: boolean;
+  active: boolean;
 }

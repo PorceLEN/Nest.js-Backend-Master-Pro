@@ -18,6 +18,6 @@ export class AuthService {
     password: string,
     passwordDb: string,
   ): Promise<boolean> {
-    return await this.passwordService.match(password, passwordDb);
+    return this.passwordService.match(password, passwordDb);
   }
 }

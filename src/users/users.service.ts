@@ -50,15 +50,17 @@ export class UsersService {
     return user;
   }
 
-  async existMail(email: string): Promise<boolean> {
+  existMail(email: string): Promise<boolean> {
     return this.usersRepository.exists({
       where: { email },
     });
   }
 
-  async theAccountExist(user: CreateUserDto): Promise<boolean> {
+  theAccountExist(user: CreateUserDto): Promise<boolean> {
     return this.usersRepository.exists({
-      where: { email: user.email  },
+      where: { email: user.email },
     });
   }
 }
+
+// à vérifier
