@@ -9,7 +9,6 @@ import {
   HttpCode,
   Delete,
   Body,
-  ConflictException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
@@ -18,11 +17,12 @@ import type { Request, Response } from 'express';
 import { AsyncUtilsService } from 'src/utils/promisify';
 import { User } from 'src/users/entities/user.entity';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { IsLoggedGuard } from './guards/IsLogged.guard';
+import { GuestGuard } from './guards/Guest.guard';
 import { NotLoggedGuard } from './guards/NotLogged.guard';
-import { Roles } from 'src/common/enums/roles/roles.decorator';
-import { Role } from 'src/common/enums/roles/role.enum';
 import { AdminGuard } from 'src/common/enums/roles/admin.guard';
+import { ConflictException } from '@nestjs/common';
+import { Roles } from 'src/common/enums/roles/roles.decorator';
+import { CustomerType } from 'src/common/enums/roles/customer-type.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -46,7 +46,6 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() user: CreateUserDto): Promise<CreateUserDto> {
-    // Créer un guard
     const userAlreadyExist = await this.usersService.theAccountExist(user);
 
     if (userAlreadyExist) {
@@ -56,7 +55,7 @@ export class AuthController {
     return this.usersService.createAndSave(user);
   }
 
-  @UseGuards(IsLoggedGuard, LocalAuthGuard)
+  @UseGuards(GuestGuard, LocalAuthGuard)
   @HttpCode(200)
   @Post('login')
   async login(@Req() req: Request & { user: User }) {
@@ -69,15 +68,15 @@ export class AuthController {
     };
   }
 
-  @Roles(Role.Admin)
   @UseGuards(NotLoggedGuard, AdminGuard)
+  @Roles(CustomerType.Admin)
   @Delete('logout')
   async logout(@Req() req: Request & { user: User }, @Res() res: Response) {
     await this.asyncUtilsService.logoutUser(req, req.user);
 
     await this.asyncUtilsService.destroySession(req.session);
 
-    res.clearCookie('NESTJS_SESSION_ID');
+    res.clearCookie('NESTJS_SESSION_ID'); // remove cookies session
 
     res.send({
       message: 'Vous vous êtes bien déconnecté',
@@ -87,5 +86,3 @@ export class AuthController {
     });
   }
 }
-
-// à revérifier
