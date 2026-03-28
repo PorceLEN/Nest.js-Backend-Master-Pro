@@ -40,14 +40,14 @@ export class CategoryController {
 
   @Patch(':id')
   updateCategory(
-    @Body(new ValidationPipe()) id: number,
-    updateCategoryDto: UpdateCategoryDto,
+    @Param('id') id: number,
+    @Body(new ValidationPipe()) updateCategoryDto: UpdateCategoryDto,
   ): Promise<UpdateResult> {
     return this.categoryService.update(id, updateCategoryDto);
   }
 
   @Delete(':id')
-  deleteCategory(id: number): Promise<DeleteResult> {
+  deleteCategory(@Param('id') id: number): Promise<DeleteResult> {
     return this.categoryService.delete(id);
   }
 }
