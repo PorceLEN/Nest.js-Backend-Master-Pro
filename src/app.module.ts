@@ -11,6 +11,8 @@ import { PasswordService } from './password/password.service';
 import { PasswordModule } from './password/password.module';
 import { FilesModule } from './files/files.module';
 import { MailsModule } from './mails/mails.module';
+import { CategoryModule } from './category/category.module';
+import { Category } from './category/entities/category.entity';
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import { MailsModule } from './mails/mails.module';
       username: 'root',
       password: 'root',
       database: 'test',
-      entities: [User, Product],
+      entities: [User, Product, Category],
       synchronize: true,
     }),
     ProductsModule,
@@ -30,6 +32,7 @@ import { MailsModule } from './mails/mails.module';
     PasswordModule,
     FilesModule,
     MailsModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService, PasswordService],

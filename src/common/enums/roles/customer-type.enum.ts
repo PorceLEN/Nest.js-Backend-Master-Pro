@@ -1,4 +1,3 @@
-// customer-type.enum.ts
 export const CustomerType = {
   User: 'user',
   Admin: 'admin',

@@ -1,2 +1,4 @@
 1 : Faire les regex
 2 : Créer les catégories des produits ect
+3 : Faire les ValidationsPipe usersService
+4 : N'appeler la DB que dans les services

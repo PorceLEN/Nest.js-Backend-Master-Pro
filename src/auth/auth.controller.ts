@@ -9,6 +9,7 @@ import {
   HttpCode,
   Delete,
   Body,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
@@ -19,10 +20,7 @@ import { User } from 'src/users/entities/user.entity';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { GuestGuard } from './guards/Guest.guard';
 import { NotLoggedGuard } from './guards/NotLogged.guard';
-import { AdminGuard } from 'src/common/enums/roles/admin.guard';
 import { ConflictException } from '@nestjs/common';
-import { Roles } from 'src/common/enums/roles/roles.decorator';
-import { CustomerType } from 'src/common/enums/roles/customer-type.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -45,7 +43,7 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() user: CreateUserDto): Promise<CreateUserDto> {
+  async register(@Body(new ValidationPipe()) user: CreateUserDto): Promise<CreateUserDto> {
     const userAlreadyExist = await this.usersService.theAccountExist(user);
 
     if (userAlreadyExist) {
@@ -68,8 +66,7 @@ export class AuthController {
     };
   }
 
-  @UseGuards(NotLoggedGuard, AdminGuard)
-  @Roles(CustomerType.Admin)
+  @UseGuards(NotLoggedGuard)
   @Delete('logout')
   async logout(@Req() req: Request & { user: User }, @Res() res: Response) {
     await this.asyncUtilsService.logoutUser(req, req.user);

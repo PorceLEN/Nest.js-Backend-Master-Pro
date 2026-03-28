@@ -6,15 +6,15 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ICustomerType } from './customer-type.enum';
-import { ROLES_KEY } from './roles.decorator';
+import { rolesKey } from './roles.decorator';
 
 @Injectable()
-export class AdminGuard implements CanActivate {
+export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<ICustomerType[]>(
-      ROLES_KEY,
+      rolesKey,
       [context.getHandler(), context.getClass()],
     );
 
