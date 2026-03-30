@@ -25,7 +25,7 @@ export class UsersController {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  @Post('create')
+  @Post()
   async create(@Body() user: CreateUserDto): Promise<User> {
     const theMailIsAlreadyExist = await this.usersService.existMail(user.email);
 

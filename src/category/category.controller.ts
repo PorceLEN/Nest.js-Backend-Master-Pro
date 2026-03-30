@@ -8,6 +8,7 @@ import {
   Patch,
   Delete,
   Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Roles } from 'src/common/enums/roles/roles.decorator';
@@ -29,6 +30,11 @@ export class CategoryController {
     return this.categoryService.get(id);
   }
 
+  @Get()
+  getAllCategory(): Promise<Category[]> {
+    return this.categoryService.getAll();
+  }
+
   @UseGuards(NotLoggedGuard, RolesGuard)
   @Roles(CustomerType.Admin)
   @Post()
@@ -47,7 +53,13 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  deleteCategory(@Param('id') id: number): Promise<DeleteResult> {
-    return this.categoryService.delete(id);
+  async deleteCategory(@Param('id') id: number): Promise<DeleteResult> {
+    const deleted = await this.categoryService.delete(id);
+
+    if (!deleted.affected) {
+      throw new NotFoundException("Cette catégorie n'existe pas !");
+    }
+
+    return deleted;
   }
 }

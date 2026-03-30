@@ -33,6 +33,10 @@ export class CategoryService {
     return category;
   }
 
+  async getAll(): Promise<Category[]> {
+    return this.categoryRepository.find();
+  }
+
   update(
     @Param('id') id: number,
     updateCategoryDto: UpdateCategoryDto,
