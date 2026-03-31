@@ -18,12 +18,11 @@ import { RolesGuard } from 'src/common/enums/roles/roles.guard';
 import { Roles } from 'src/common/enums/roles/roles.decorator';
 import { CustomerType } from 'src/common/enums/roles/customer-type.enum';
 import { NotLoggedGuard } from 'src/auth/guards/NotLogged.guard';
+import { DeleteResult } from 'typeorm/browser';
 
 @Controller('products')
 export class ProductsController {
-  constructor(
-    private readonly productsService: ProductsService,
-  ) {}
+  constructor(private readonly productsService: ProductsService) {}
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Product> {
@@ -43,12 +42,13 @@ export class ProductsController {
   async update(
     @Param('id') id: number,
     @Body(new ValidationPipe()) updateProductDto: UpdateProductDto,
-  ) {
-      
+  ): Promise<UpdateResult> {
+    return this.productsService.update(id, updateProductDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id') id: number): Promise<DeleteResult> {
+    return this.productsService.delete(id);
   }
 }
 

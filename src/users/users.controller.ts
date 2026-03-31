@@ -11,8 +11,6 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateResult } from 'typeorm/browser';
 import { DeleteResult } from 'typeorm/browser';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,11 +18,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    @InjectRepository(User) private usersRepository: Repository<User>,
-  ) {}
-
+  constructor(private readonly usersService: UsersService) {}
 
   // auth.controller.ts already use ValidationPipe() !!!
   @Post()
@@ -50,11 +44,13 @@ export class UsersController {
     @Param('id') id: number,
     @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
-    return this.usersRepository.update(id, updateUserDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<DeleteResult> {
-    return this.usersRepository.delete(id);
+    return this.usersService.delete(id);
   }
 }
+
+// retirer repo ici
