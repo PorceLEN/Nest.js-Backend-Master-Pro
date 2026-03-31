@@ -20,9 +20,7 @@ export class CategoryService {
   }
 
   async get(id: number): Promise<Category> {
-    const category = await this.categoryRepository.findOneBy({
-      id,
-    });
+    const category = await this.categoryRepository.findOneBy({id,});
 
     console.log(category);
 

@@ -53,13 +53,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  async deleteCategory(@Param('id') id: number): Promise<DeleteResult> {
-    const deleted = await this.categoryService.delete(id);
-
-    if (!deleted.affected) {
-      throw new NotFoundException("Cette catégorie n'existe pas !");
-    }
-
-    return deleted;
+  deleteCategory(@Param('id') id: number): Promise<DeleteResult> {
+    return this.categoryService.delete(id);
   }
 }

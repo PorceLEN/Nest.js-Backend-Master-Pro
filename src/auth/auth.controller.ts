@@ -10,6 +10,7 @@ import {
   Delete,
   Body,
   ValidationPipe,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
@@ -57,6 +58,7 @@ export class AuthController {
   @HttpCode(200)
   @Post('login')
   async login(@Req() req: Request & { user: User }) {
+
     await this.asyncUtilsService.login(req, req.user);
 
     return {

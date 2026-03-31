@@ -25,6 +25,8 @@ export class UsersController {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
+
+  // auth.controller.ts already use ValidationPipe() !!!
   @Post()
   async create(@Body() user: CreateUserDto): Promise<User> {
     const theMailIsAlreadyExist = await this.usersService.existMail(user.email);
