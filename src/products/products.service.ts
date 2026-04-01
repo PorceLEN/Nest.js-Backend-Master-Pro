@@ -14,7 +14,13 @@ export class ProductsService {
   ) {}
 
   createAndSave(createProductDto: CreateProductDto): Promise<Product> {
-    const newProduct = this.productsRepository.create(createProductDto);
+    // const newProduct = this.productsRepository.create(createProductDto);
+    // return this.productsRepository.save(newProduct);
+    const newProduct = this.productsRepository.create({
+      ...createProductDto,
+      category: { id: createProductDto.categoryId },
+    });
+
     return this.productsRepository.save(newProduct);
   }
 
@@ -26,6 +32,16 @@ export class ProductsService {
     }
 
     return product;
+  }
+
+  getAll(): Promise<Product[]> {
+    return this.productsRepository.find();
+  }
+
+  getAllProductsOfCategory(categoryId: number): Promise<Product[]> {
+    return this.productsRepository.find({
+      where: { category: { id: categoryId } },
+    });
   }
 
   update(

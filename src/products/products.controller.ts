@@ -29,6 +29,17 @@ export class ProductsController {
     return this.productsService.get(id);
   }
 
+  @Get("category/:id")
+   getAllProductsOfCategory(@Param("id") categoryId: number): Promise<Product[]> {
+    return this.productsService.getAllProductsOfCategory(categoryId);
+  }
+
+
+  @Get()
+  getAll(): Promise<Product[]> {
+    return this.productsService.getAll();
+  }
+
   @UseGuards(NotLoggedGuard, RolesGuard)
   @Roles(CustomerType.Admin)
   @Post()
