@@ -31,7 +31,7 @@ export class UsersController {
       );
     }
 
-    return await this.usersService.createAndSave(user);
+    return this.usersService.createAndSave(user);
   }
 
   @Get(':id')

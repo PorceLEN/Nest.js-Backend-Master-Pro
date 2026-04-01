@@ -14,13 +14,14 @@ import {
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 import { LocalAuthGuard } from './guards/LocalAuth.guard';
-import type { Request, Response } from 'express';
+import type { /*Request*/ Response } from 'express';
 import { AsyncUtilsService } from 'src/utils/promisify';
 import { User } from 'src/users/entities/user.entity';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { GuestGuard } from './guards/Guest.guard';
 import { NotLoggedGuard } from './guards/NotLogged.guard';
 import { ConflictException } from '@nestjs/common';
+import type { CustomRequest } from 'src/types/CustomRequest.type';
 
 @Controller('auth')
 export class AuthController {
@@ -33,7 +34,7 @@ export class AuthController {
   @Get('/')
   async getAuthSession(
     @Session() session: Record<string, any>,
-    @Req() req: Request,
+    @Req() req: CustomRequest,
   ) {
     return {
       user: req.user ?? "empty",
@@ -56,7 +57,7 @@ export class AuthController {
   @UseGuards(GuestGuard, LocalAuthGuard)
   @HttpCode(200)
   @Post('login')
-  async login(@Req() req: Request & { user: User }) {
+  async login(@Req() req: CustomRequest) {
 
     await this.asyncUtilsService.login(req, req.user);
 
@@ -69,7 +70,7 @@ export class AuthController {
 
   @UseGuards(NotLoggedGuard)
   @Delete('logout')
-  async logout(@Req() req: Request & { user: User }, @Res() res: Response) {
+  async logout(@Req() req: CustomRequest, @Res() res: Response) {
     await this.asyncUtilsService.logoutUser(req, req.user);
 
     await this.asyncUtilsService.destroySession(req.session);
