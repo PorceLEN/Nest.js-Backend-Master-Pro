@@ -13,9 +13,9 @@ export class ProductsService {
     @InjectRepository(Product) private productsRepository: Repository<Product>,
   ) {}
 
-  async createAndSave(createProductDto: CreateProductDto): Promise<Product> {
-     const newProduct = this.productsRepository.create(createProductDto);
-     return this.productsRepository.save(newProduct);
+  createAndSave(createProductDto: CreateProductDto): Promise<Product> {
+    const newProduct = this.productsRepository.create(createProductDto);
+    return this.productsRepository.save(newProduct);
   }
 
   async get(id: number): Promise<Product> {
@@ -28,14 +28,14 @@ export class ProductsService {
     return product;
   }
 
-  async update(
+  update(
     id: number,
     updateProductDto: UpdateProductDto,
   ): Promise<UpdateResult> {
     return this.productsRepository.update(id, updateProductDto);
   }
 
-  async delete(id: number): Promise<DeleteResult> {
+  delete(id: number): Promise<DeleteResult> {
     return this.productsRepository.delete(id);
   }
 }

@@ -10,7 +10,6 @@ import {
   Delete,
   Body,
   ValidationPipe,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
@@ -37,7 +36,7 @@ export class AuthController {
     @Req() req: Request,
   ) {
     return {
-      user: req.user,
+      user: req.user ?? "empty",
       session: req.session,
       cookie: { sessionID: req.sessionID, cookie: req.cookies },
     };

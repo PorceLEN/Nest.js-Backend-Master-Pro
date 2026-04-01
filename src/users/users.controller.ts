@@ -52,5 +52,3 @@ export class UsersController {
     return this.usersService.delete(id);
   }
 }
-
-// retirer repo ici
