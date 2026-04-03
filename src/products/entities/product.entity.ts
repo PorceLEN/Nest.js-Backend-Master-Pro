@@ -1,5 +1,12 @@
 import { Category } from 'src/category/entities/category.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  Index,
+  BeforeInsert,
+} from 'typeorm';
 
 @Entity()
 export class Product {
@@ -9,7 +16,7 @@ export class Product {
   @Column()
   name: string;
 
-  @Column()
+  @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
   @Column({ default: 0 })
@@ -19,4 +26,21 @@ export class Product {
     nullable: true,
   })
   category: Category;
+
+  @Column({ default: false })
+  isActive: boolean;
+
+  @Column({ nullable: true })
+  imageUrl: string;
+
+  @Column()
+  @Index({ unique: true })
+  productCode: string;
+
+  // @BeforeInsert()
+  // generateProductCode() {
+  //   this.productCode = 
+  // }
 }
+
+// Créer un SKU 

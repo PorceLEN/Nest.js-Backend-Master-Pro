@@ -55,5 +55,3 @@ export class ProductsService {
     return this.productsRepository.delete(id);
   }
 }
-
-// CRUD => CREATE / READ / Update / Delete

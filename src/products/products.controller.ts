@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Patch,
   UseGuards,
   ValidationPipe,
@@ -33,7 +32,6 @@ export class ProductsController {
    getAllProductsOfCategory(@Param("id") categoryId: number): Promise<Product[]> {
     return this.productsService.getAllProductsOfCategory(categoryId);
   }
-
 
   @Get()
   getAll(): Promise<Product[]> {
