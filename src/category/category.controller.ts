@@ -8,13 +8,12 @@ import {
   Patch,
   Delete,
   Param,
-  NotFoundException,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { Roles } from 'src/common/enums/roles/roles.decorator';
-import { CustomerType } from 'src/common/enums/roles/customer-type.enum';
-import { NotLoggedGuard } from 'src/auth/guards/NotLogged.guard';
-import { RolesGuard } from 'src/common/enums/roles/roles.guard';
+import { Roles } from '../common/enums/roles/roles.decorator';
+import { CustomerType } from '../common/enums/roles/customer-type.enum';
+import { NotLoggedGuard } from '../auth/guards/NotLogged.guard';
+import { RolesGuard } from '../common/enums/roles/roles.guard';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { Category } from './entities/category.entity';
 import { UpdateCategoryDto } from './dto/update-category.dto';

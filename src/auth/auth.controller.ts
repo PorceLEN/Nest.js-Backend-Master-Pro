@@ -12,16 +12,16 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { LocalAuthGuard } from './guards/LocalAuth.guard';
 import type { /*Request*/ Response } from 'express';
-import { AsyncUtilsService } from 'src/utils/promisify';
-import { User } from 'src/users/entities/user.entity';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { AsyncUtilsService } from '../utils/promisify';
+import { User } from '../users/entities/user.entity';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { GuestGuard } from './guards/Guest.guard';
 import { NotLoggedGuard } from './guards/NotLogged.guard';
 import { ConflictException } from '@nestjs/common';
-import type { CustomRequest } from 'src/types/CustomRequest.type';
+import type { CustomRequest } from '../types/CustomRequest.type';
 
 @Controller('auth')
 export class AuthController {

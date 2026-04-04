@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
-import { PasswordService } from 'src/password/password.service';
-import { Request as Req } from '@nestjs/common';
-import type { Request } from 'express';
-import { SessionData } from 'express-session';
-import { LocalAuthGuard } from './guards/LocalAuth.guard';
-import { AuthGuard } from '@nestjs/passport';
+import { UsersService } from '../users/users.service';
+import { PasswordService } from '../password/password.service';
 
 @Injectable()
 export class AuthService {

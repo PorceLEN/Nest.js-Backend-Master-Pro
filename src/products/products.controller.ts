@@ -13,10 +13,10 @@ import { Param, Post } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateResult } from 'typeorm/browser';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { RolesGuard } from 'src/common/enums/roles/roles.guard';
-import { Roles } from 'src/common/enums/roles/roles.decorator';
-import { CustomerType } from 'src/common/enums/roles/customer-type.enum';
-import { NotLoggedGuard } from 'src/auth/guards/NotLogged.guard';
+import { RolesGuard } from '../common/enums/roles/roles.guard';
+import { Roles } from '../common/enums/roles/roles.decorator';
+import { CustomerType } from '../common/enums/roles/customer-type.enum';
+import { NotLoggedGuard } from '../auth/guards/NotLogged.guard';
 import { DeleteResult } from 'typeorm/browser';
 
 @Controller('products')
