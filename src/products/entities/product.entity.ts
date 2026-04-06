@@ -7,6 +7,7 @@ import {
   Index,
   BeforeInsert,
 } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity()
 export class Product {
@@ -33,14 +34,15 @@ export class Product {
   @Column({ nullable: true })
   imageUrl: string;
 
-  @Column()
   @Index({ unique: true })
+  @Column()
   productCode: string;
 
-  // @BeforeInsert()
-  // generateProductCode() {
-  //   this.productCode = 
-  // }
-}
+  @BeforeInsert()
+  generateCode() {
 
-// Créer un SKU 
+    const productCodeGenerated = 'PROD-' + uuidv4().slice(0, 8).toUpperCase();
+
+    this.productCode = productCodeGenerated;
+  }
+}

@@ -14,13 +14,11 @@ export class ProductsService {
   ) {}
 
   createAndSave(createProductDto: CreateProductDto): Promise<Product> {
-    // const newProduct = this.productsRepository.create(createProductDto);
-    // return this.productsRepository.save(newProduct);
     const newProduct = this.productsRepository.create({
       ...createProductDto,
       category: { id: createProductDto.categoryId },
     });
-
+    
     return this.productsRepository.save(newProduct);
   }
 
