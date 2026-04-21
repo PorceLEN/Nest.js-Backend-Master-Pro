@@ -1,0 +1,11 @@
+//Reflector//
+
+Reflector: =>
+
+Représente =>
+ get                :	une seule valeur (selon cible)
+ getAll	            :   [ ['user'], ['admin'] ]
+ getAllAndOverride	:   ['user'] (priorité handler)
+ getAllAndMerge	    :   ['user', 'admin']
+
+//////////////////////////////////////////////////////////////////////

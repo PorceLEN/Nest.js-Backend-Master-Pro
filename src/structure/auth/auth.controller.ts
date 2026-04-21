@@ -15,7 +15,7 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { LocalAuthGuard } from './guards/LocalAuth.guard';
 import type { Response } from 'express';
-import { AsyncUtilsService } from '../../promisify/promisify';
+import { PromisifyService } from '../../promisify/PromisifyService';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { GuestGuard } from './guards/Guest.guard';
 import { NotLoggedGuard } from './guards/NotLogged.guard';
@@ -27,7 +27,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
-    private readonly asyncUtilsService: AsyncUtilsService,
+    private readonly promisifyService: PromisifyService,
   ) {}
 
   @Get('/')
@@ -58,7 +58,7 @@ export class AuthController {
   @Post('login')
   async login(@Req() req: CustomRequest) {
 
-    await this.asyncUtilsService.login(req, req.user);
+    await this.promisifyService.login(req);
 
     return {
       user: req.user,
@@ -70,9 +70,7 @@ export class AuthController {
   @UseGuards(NotLoggedGuard)
   @Delete('logout')
   async logout(@Req() req: CustomRequest, @Res() res: Response) {
-    await this.asyncUtilsService.logoutUser(req, req.user);
-
-    await this.asyncUtilsService.destroySession(req.session);
+    await this.promisifyService.logout(req);
 
     res.clearCookie('NESTJS_SESSION_ID'); // remove cookies session
 
