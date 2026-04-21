@@ -1,18 +1,18 @@
-import { Module, NestModule, MiddlewareConsumer  } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { User } from './users/entities/user.entity';
+import { User } from './structure/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductsModule } from './products/products.module';
-import { Product } from './products/entities/product.entity';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { PasswordService } from './password/password.service';
-import { PasswordModule } from './password/password.module';
-import { FilesModule } from './files/files.module';
-import { MailsModule } from './mails/mails.module';
-import { CategoryModule } from './category/category.module';
-import { Category } from './category/entities/category.entity';
+import { ProductsModule } from './structure/users/products/products.module';
+import { Product } from './structure/users/products/entities/product.entity';
+import { UsersModule } from './structure/users/users.module';
+import { AuthModule } from './structure/auth/auth.module';
+import { PasswordService } from './structure/password/password.service';
+import { PasswordModule } from './structure/password/password.module';
+import { FilesModule } from './structure/files/files.module';
+import { MailsModule } from './structure/mails/mails.module';
+import { CategoryModule } from './structure/category/category.module';
+import { Category } from './structure/category/entities/category.entity';
 
 @Module({
   imports: [
@@ -37,9 +37,4 @@ import { Category } from './category/entities/category.entity';
   controllers: [AppController],
   providers: [AppService, PasswordService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-  }
-}
-// Vérifier middleware
+export class AppModule {}

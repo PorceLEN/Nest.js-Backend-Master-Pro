@@ -10,7 +10,7 @@ export class GuestGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     
     if (request.isAuthenticated()) {
-      throw new UnauthorizedException("Vous êtes déjà connecté")
+      throw new UnauthorizedException("Un compte est déjà connecté !")
     }
 
     return true;

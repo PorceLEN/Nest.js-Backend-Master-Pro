@@ -10,10 +10,10 @@ import {
   Param,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { Roles } from '../common/enums/roles/roles.decorator';
-import { CustomerType } from '../common/enums/roles/customer-type.enum';
+import { Roles } from '../../common/enums/roles/roles.decorator';
+import { CustomerType } from '../../common/enums/roles/customer-type.enum';
 import { NotLoggedGuard } from '../auth/guards/NotLogged.guard';
-import { RolesGuard } from '../common/enums/roles/roles.guard';
+import { AdminGuard } from '../../common/enums/roles/admin.guard';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { Category } from './entities/category.entity';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -34,8 +34,8 @@ export class CategoryController {
     return this.categoryService.getAll();
   }
 
-  @UseGuards(NotLoggedGuard, RolesGuard)
-  @Roles(CustomerType.Admin)
+  @UseGuards(NotLoggedGuard, AdminGuard)
+  @Roles(CustomerType.admin)
   @Post()
   create(
     @Body(new ValidationPipe()) createCategoryDto: CreateCategoryDto,

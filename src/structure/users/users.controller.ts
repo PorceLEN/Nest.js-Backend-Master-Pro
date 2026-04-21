@@ -35,12 +35,12 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOneById(@Param('id') id: number): Promise<User> {
+  findOneById(@Param('id') id: number): Promise<User> {
     return this.usersService.findById(id);
   }
 
   @Patch(':id')
-  async update(
+  update(
     @Param('id') id: number,
     @Body(new ValidationPipe()) updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
@@ -48,7 +48,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<DeleteResult> {
+  delete(@Param('id') id: number): Promise<DeleteResult> {
     return this.usersService.delete(id);
   }
 }

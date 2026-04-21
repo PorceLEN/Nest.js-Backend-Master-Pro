@@ -14,14 +14,13 @@ import {
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { LocalAuthGuard } from './guards/LocalAuth.guard';
-import type { /*Request*/ Response } from 'express';
-import { AsyncUtilsService } from '../utils/promisify';
-import { User } from '../users/entities/user.entity';
+import type { Response } from 'express';
+import { AsyncUtilsService } from '../../promisify/promisify';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { GuestGuard } from './guards/Guest.guard';
 import { NotLoggedGuard } from './guards/NotLogged.guard';
 import { ConflictException } from '@nestjs/common';
-import type { CustomRequest } from '../types/CustomRequest.type';
+import type { CustomRequest } from '../../types/CustomRequest.type';
 
 @Controller('auth')
 export class AuthController {
@@ -53,7 +52,7 @@ export class AuthController {
 
     return this.usersService.createAndSave(user);
   }
-
+  
   @UseGuards(GuestGuard, LocalAuthGuard)
   @HttpCode(200)
   @Post('login')

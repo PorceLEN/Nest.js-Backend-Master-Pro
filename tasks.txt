@@ -1,0 +1,31 @@
+1 : Faire les regex
+2 : Créer les catégories des produits ect
+3 : Faire les ValidationsPipe usersService
+4 : N'appeler la DB que dans les services
+
+
+🔄 5. Logique métier
+
+C’est le “cerveau” :
+
+règles (ex: impossible d’acheter si stock = 0)
+calculs (prix, taxes, etc.)
+workflows (commande → paiement → livraison)
+🚀 6. Performance & optimisation
+cache (Redis)
+pagination
+éviter requêtes lentes
+gestion de charge
+🧪 7. Tests
+tests unitaires
+tests d’API
+vérifier que tout fonctionne
+🧰 8. DevOps / déploiement
+config serveur
+Docker
+CI/CD
+monitoring
+🐛 9. Debug & maintenance
+corriger bugs
+logs
+améliorer le code

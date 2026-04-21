@@ -13,12 +13,14 @@ export class ProductsService {
     @InjectRepository(Product) private productsRepository: Repository<Product>,
   ) {}
 
+  // CRUD
+
   createAndSave(createProductDto: CreateProductDto): Promise<Product> {
     const newProduct = this.productsRepository.create({
       ...createProductDto,
       category: { id: createProductDto.categoryId },
     });
-    
+
     return this.productsRepository.save(newProduct);
   }
 

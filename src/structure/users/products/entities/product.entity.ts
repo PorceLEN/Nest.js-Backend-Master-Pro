@@ -1,4 +1,4 @@
-import { Category } from '../../category/entities/category.entity';
+import { Category } from '../../../category/entities/category.entity';
 import {
   Entity,
   Column,
@@ -18,7 +18,10 @@ export class Product {
   name: string;
 
   @Column('decimal', { precision: 10, scale: 2 })
-  price: number;
+  priceHt: number;
+
+  @Column({ nullable: true })
+  tvaRate: number
 
   @Column({ default: 0 })
   stock: number;

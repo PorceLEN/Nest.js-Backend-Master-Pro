@@ -5,7 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import { exec } from 'child_process';
 import { Session } from 'express-session';
 import { Request } from 'express';
-import { User } from '../users/entities/user.entity';
+import { User } from '../structure/users/entities/user.entity';
 
 @Injectable()
 export class AsyncUtilsService {

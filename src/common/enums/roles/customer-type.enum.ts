@@ -1,13 +1,13 @@
 export const CustomerType = {
-  User: 'user',
-  Admin: 'admin',
+  user: 'user',
+  admin: 'admin',
 } as const;
 
 export type ICustomerType = (typeof CustomerType)[keyof typeof CustomerType];
 
 export const CustomerTypeText = {
-  [CustomerType.User]: 'User',
-  [CustomerType.Admin]: 'Admin',
+  [CustomerType.user]: 'user',
+  [CustomerType.admin]: 'admin',
 } as const satisfies Record<ICustomerType, string>;
 
 export function isCustomerType(value: unknown): value is ICustomerType {

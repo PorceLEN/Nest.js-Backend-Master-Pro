@@ -11,12 +11,12 @@ import { ProductsService } from './products.service';
 import { Product } from './entities/product.entity';
 import { Param, Post } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateResult } from 'typeorm/browser';
+import { Admin, UpdateResult } from 'typeorm/browser';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { RolesGuard } from '../common/enums/roles/roles.guard';
-import { Roles } from '../common/enums/roles/roles.decorator';
-import { CustomerType } from '../common/enums/roles/customer-type.enum';
-import { NotLoggedGuard } from '../auth/guards/NotLogged.guard';
+import { AdminGuard } from '../../../common/enums/roles/admin.guard';
+import { Roles } from '../../../common/enums/roles/roles.decorator';
+import { CustomerType } from '../../../common/enums/roles/customer-type.enum';
+import { NotLoggedGuard } from '../../auth/guards/NotLogged.guard';
 import { DeleteResult } from 'typeorm/browser';
 
 @Controller('products')
@@ -38,8 +38,8 @@ export class ProductsController {
     return this.productsService.getAll();
   }
 
-  @UseGuards(NotLoggedGuard, RolesGuard)
-  @Roles(CustomerType.Admin)
+  @UseGuards(NotLoggedGuard, AdminGuard)
+  @Roles(CustomerType.admin)
   @Post()
   async create(
     @Body(new ValidationPipe()) createProductDto: CreateProductDto,
@@ -59,6 +59,5 @@ export class ProductsController {
   async delete(@Param('id') id: number): Promise<DeleteResult> {
     return this.productsService.delete(id);
   }
-}
 
-// go to create all
+}
