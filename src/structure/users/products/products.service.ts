@@ -1,7 +1,7 @@
-import { Body, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { NumericType, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { UpdateResult } from 'typeorm/browser';
@@ -15,7 +15,7 @@ export class ProductsService {
 
   // CRUD
 
-  createAndSave(createProductDto: CreateProductDto): Promise<Product> {
+  create(createProductDto: CreateProductDto): Promise<Product> {
     const newProduct = this.productsRepository.create({
       ...createProductDto,
       category: { id: createProductDto.categoryId },
@@ -24,7 +24,7 @@ export class ProductsService {
     return this.productsRepository.save(newProduct);
   }
 
-  async get(id: number): Promise<Product> {
+  async getById(id: number): Promise<Product> {
     const product = await this.productsRepository.findOneBy({ id });
 
     if (!product) {
@@ -53,5 +53,21 @@ export class ProductsService {
 
   delete(id: number): Promise<DeleteResult> {
     return this.productsRepository.delete(id);
+  }
+
+  // WORK LOGIC
+
+  async inRupture(id: number): Promise<void> {
+    const product = await this.productsRepository.findOneBy({ id });
+
+    const emptyStock = 0;
+
+    if (!product) {
+      throw new NotFoundException("Ce produit n'existe pas !")
+    }
+
+    if (product.stock <= emptyStock) {
+      throw new BadRequestException("Ce produit est en rupture de stock !")
+    }
   }
 }

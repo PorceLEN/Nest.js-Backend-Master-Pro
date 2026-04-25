@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,7 +12,7 @@ import { ProductsService } from './products.service';
 import { Product } from './entities/product.entity';
 import { Param, Post } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
-import { Admin, UpdateResult } from 'typeorm/browser';
+import { NumericType, UpdateResult } from 'typeorm/browser';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AdminGuard } from '../../../common/enums/roles/admin.guard';
 import { Roles } from '../../../common/enums/roles/roles.decorator';
@@ -23,19 +24,23 @@ import { DeleteResult } from 'typeorm/browser';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Product> {
-    return this.productsService.get(id);
-  }
-
-  @Get("category/:id")
-   getAllProductsOfCategory(@Param("id") categoryId: number): Promise<Product[]> {
-    return this.productsService.getAllProductsOfCategory(categoryId);
-  }
+  // CRUD
 
   @Get()
   getAll(): Promise<Product[]> {
     return this.productsService.getAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: number): Promise<Product> {
+    return this.productsService.getById(id);
+  }
+
+  @Get('category/:id')
+  getAllProductsOfCategory(
+    @Param('id') categoryId: number,
+  ): Promise<Product[]> {
+    return this.productsService.getAllProductsOfCategory(categoryId);
   }
 
   @UseGuards(NotLoggedGuard, AdminGuard)
@@ -44,11 +49,11 @@ export class ProductsController {
   async create(
     @Body(new ValidationPipe()) createProductDto: CreateProductDto,
   ): Promise<Product> {
-    return this.productsService.createAndSave(createProductDto);
+    return this.productsService.create(createProductDto);
   }
 
   @Patch(':id')
-  async update(
+  update(
     @Param('id') id: number,
     @Body(new ValidationPipe()) updateProductDto: UpdateProductDto,
   ): Promise<UpdateResult> {
@@ -56,8 +61,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<DeleteResult> {
+  delete(@Param('id') id: number): Promise<DeleteResult> {
     return this.productsService.delete(id);
   }
-
 }

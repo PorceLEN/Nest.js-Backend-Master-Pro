@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { LocalStrategy } from './LocalStrategy.passport';
 import { SessionSerializer } from './serialize/serialize.service';
-import { PromisifyService } from '../../promisify/PromisifyService';
+import { PromisifyService } from '../promisify/promisify.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],

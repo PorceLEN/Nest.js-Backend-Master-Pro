@@ -1,6 +1,7 @@
 
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { CustomRequest } from '../../../types/CustomRequest.type';
 
 @Injectable()
 export class GuestGuard implements CanActivate {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { promisify } from 'util';
 import { Session } from 'express-session';
-import { CustomRequest } from '../types/CustomRequest.type';
+import { CustomRequest } from '../../types/CustomRequest.type';
 
 @Injectable()
 export class PromisifyService {

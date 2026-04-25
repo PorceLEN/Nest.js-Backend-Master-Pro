@@ -6,8 +6,10 @@ import {
   ManyToOne,
   Index,
   BeforeInsert,
+  CreateDateColumn,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { format } from 'date-fns';
 
 @Entity()
 export class Product {
@@ -17,11 +19,11 @@ export class Product {
   @Column()
   name: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2, nullable: true })
   priceHt: number;
 
   @Column({ nullable: true })
-  tvaRate: number
+  tvaRate: number;
 
   @Column({ default: 0 })
   stock: number;
@@ -41,9 +43,11 @@ export class Product {
   @Column()
   productCode: string;
 
-  @BeforeInsert()
-  generateCode() {
+  @CreateDateColumn()
+  createdDate: Date;
 
+  @BeforeInsert()
+  generateProductCode() {
     const productCodeGenerated = 'PROD-' + uuidv4().slice(0, 8).toUpperCase();
 
     this.productCode = productCodeGenerated;

@@ -15,12 +15,13 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { LocalAuthGuard } from './guards/LocalAuth.guard';
 import type { Response } from 'express';
-import { PromisifyService } from '../../promisify/PromisifyService';
+import { PromisifyService } from '../promisify/promisify.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { GuestGuard } from './guards/Guest.guard';
 import { NotLoggedGuard } from './guards/NotLogged.guard';
 import { ConflictException } from '@nestjs/common';
 import type { CustomRequest } from '../../types/CustomRequest.type';
+
 
 @Controller('auth')
 export class AuthController {
