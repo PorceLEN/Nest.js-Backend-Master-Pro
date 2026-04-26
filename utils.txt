@@ -13,3 +13,4 @@
 13 : csrf-csrf
 14 : @fastify/csrf-protection
 15 : date-fns
+16 : npm install @kitajs/html @kitajs/ts-html-plugin

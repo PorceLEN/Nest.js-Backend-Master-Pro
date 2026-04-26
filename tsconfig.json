@@ -22,6 +22,10 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["jest", "node"] //????
+    "types": ["jest", "node"], //????
+    "jsx": "react",
+    "jsxFactory": "Html.createElement",
+    "jsxFragmentFactory": "Html.Fragment",
+    "plugins": [{ "name": "@kitajs/ts-html-plugin" }]
   }
 }
